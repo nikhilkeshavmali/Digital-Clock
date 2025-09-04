@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digital Clock</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <!-- Create a Digital Clock using HTML, CSS and JavaScript with Stopwatch feature. The requirements for the clock are:
+
+1. It should display the current Date and Time accurately.
+2. Timing should be displayed in HH:MM:SS format.
+3. The clock should be a 12 hours clock. It should display AM/PM based on the time.
+4. The clock should also display the current Date as given below:
+	04 September 2025
+5. It should also display the todays day. (E.g. Thursday)
+6. It should also have a stopwatch in following format: HH:MM:SS:MS
+7. The stopwatch should have three buttons, Start, Stop, Reset.
+8. The layout of the clock should be as given above. -->
+  <body>
+    <div id="main">
+      <div class="clock">
+        <span id="hrs">00</span> : <span id="min">00</span> :
+        <span id="sec">00</span>
+        <span id="ampm">AM</span>
+      </div>
+      <div class="date">
+        <span id="day">Thursday</span>,
+        <span id="date">04 September 2025</span>
+      </div>
+      <!-- stopwatch -->
+      <div class="stopwatch">
+        <span id="sw-hrs">00</span> : <span id="sw-min">00</span> :
+        <span id="sw-sec">00</span> : <span id="sw-ms">000</span>
+        <div class="buttons">
+          <button id="start-btn">Start</button>
+          <button id="stop-btn">Stop</button>
+          <button id="reset-btn">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function updateClock() {
+        let now = new Date();
+        let hrs = document.getElementById("hrs");
+        let min = document.getElementById("min");
+        let sec = document.getElementById("sec");
+        let ampm = document.getElementById("ampm");
+        let hours = now.getHours();
+        if (hours >= 12) {
+          ampm.innerText = "PM";
+        } else {
+          ampm.innerText = "AM";
+        }
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+
+        let h = hours.toString().padStart(2, "0");
+        let m = now.getMinutes().toString().padStart(2, "0");
+        let s = now.getSeconds().toString().padStart(2, "0");
+
+        hrs.innerText = h;
+        min.innerText = m;
+        sec.innerText = s;
+      }
+
+      updateClock();
+      setInterval(updateClock, 1000);
+      // stopwatch
+      let swHrs = document.getElementById("sw-hrs");
+      let swMin = document.getElementById("sw-min");
+      let swSec = document.getElementById("sw-sec");
+      let swMs = document.getElementById("sw-ms");
+      let startBtn = document.getElementById("start-btn");
+      let stopBtn = document.getElementById("stop-btn");
+      let resetBtn = document.getElementById("reset-btn");
+      let swInterval;
+      let swH = 0;
+      let swM = 0;
+      let swS = 0;
+      let swMS = 0;
+      function updateStopwatch() {
+        swMS += 10;
+        if (swMS >= 1000) {
+          swMS = 0;
+          swS++;
+        }
+        if (swS >= 60) {
+          swS = 0;
+          swM++;
+        }
+        if (swM >= 60) {
+          swM = 0;
+          swH++;
+        }
+        swHrs.innerText = swH.toString().padStart(2, "0");
+        swMin.innerText = swM.toString().padStart(2, "0");
+        swSec.innerText = swS.toString().padStart(2, "0");
+        swMs.innerText = swMS.toString().padStart(3, "0");
+      }
+      startBtn.addEventListener("click", function () {
+        if (!swInterval) {
+          swInterval = setInterval(updateStopwatch, 10);
+        }
+      });
+      stopBtn.addEventListener("click", function () {
+        clearInterval(swInterval);
+        swInterval = null;
+      });
+      resetBtn.addEventListener("click", function () {
+        clearInterval(swInterval);
+        swInterval = null;
+        swH = 0;
+        swM = 0;
+        swS = 0;
+        swMS = 0;
+        swHrs.innerText = "00";
+        swMin.innerText = "00";
+        swSec.innerText = "00";
+        swMs.innerText = "000";
+      });
+      // date
+      function updateDate() {
+        let now = new Date();
+        let day = document.getElementById("day");
+        let date = document.getElementById("date");
+        let days = [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ];
+        let months = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+        let d = days[now.getDay()];
+        let dt = now.getDate().toString().padStart(2, "0");
+        let m = months[now.getMonth()];
+        let y = now.getFullYear();
+        day.innerText = d;
+        date.innerText = `${dt} ${m} ${y}`;
+      }
+      updateDate();
+    </script>
+  </body>
+</html>
